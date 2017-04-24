@@ -1,0 +1,6 @@
+{
+    "require": {
+        "usmanhalalit/pixie": "^2.0",
+        "smarty/smarty": "^3.1"
+    }
+}
