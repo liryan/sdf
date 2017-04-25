@@ -60,26 +60,27 @@ class IndexModule extends Base
 	public function index()
 	{
 		$result=[];
-		$unit=$this->input('unit',1);
+		$unit=$this->input('unit',0);
 		$pages=DB::table('units')->groupBy('unit')->orderBy('unit','asc')->select('unit')->get();
 		$page=[];
-		$max_unit=0;
-		foreach($pages as $row){
-			if($unit==1 && $unit<$row->unit){
+		$next_unit=0;
+		foreach($pages as $k=>$row){
+			if($unit==0){
 				$unit=$row->unit;
 			}
-			$page[]=$row->unit;
-			if($max_unit<$row->unit){
-				$max_unit=$row->unit;
+			if($unit==$row->unit){
+				if(isset($pages[$k+1])){
+					$next_unit=$pages[$k+1]->unit;
+				}
+				else{
+					$next_unit=$unit;
+				}
 			}
+			$page[]=$row->unit;
 		}
 
 		$result['cur_unit']=$unit;
-		$result['next_unit']=$unit+1;
-
-		if($max_unit<$unit+1){
-			$result['next_unit']=$max_unit;
-		}
+		$result['next_unit']=$next_unit;
 
 		$data=DB::table('units')->where('unit','=',$unit)->orderBy('question','asc')->orderBy('id','asc')->get();
 		$units=[];
